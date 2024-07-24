@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.51.11",
+    "axios": "^1.7.2",
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",

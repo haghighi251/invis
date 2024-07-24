@@ -21,7 +21,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@infrastructure/*": ["src/infrastructure/*"]
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@modules/*": ["src/modules/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@shared/*": ["src/shared/*"],
     },
     "types": ["jest", "@testing-library/jest-dom"],
     "emitDecoratorMetadata": true,
