@@ -26,11 +26,6 @@ const { wrapper } = createWrapper();
 describe("useUserList Hook", () => {
   beforeEach(() => {
     mockedUseQuery.mockClear();
-    // getUsersMocked.mockResolvedValue({
-    //   success: true,
-    //   error: "",
-    //   data: invisMockedUsers,
-    // });
   });
 
   it("should return loading with no users and error(initial loading)", async () => {
