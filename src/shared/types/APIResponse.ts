@@ -6,7 +6,7 @@ export const APIResponseSchema = z.object({
     message: "You have to add the success option in your result.",
   }),
   error: z.string().optional(),
-  data: z.union([z.array(UserSchema), z.null()]),
+  data: z.union([z.array(UserSchema), UserSchema, z.null()]),
 });
 
 export type APIResponse = z.infer<typeof APIResponseSchema>;
