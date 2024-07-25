@@ -8,18 +8,18 @@ import { ZodError } from "zod";
 
 export const UserIDSchema = UserSchema.shape.id;
 
-export async function GET({
-  params,
-}: {
-  params: { id: number };
-}): Promise<NextResponse<APIResponse>> {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: number } }
+): Promise<NextResponse<APIResponse>> {
   try {
-    UserIDSchema.parse(params.id);
+    const userId = Number(params.id);
+    UserIDSchema.parse(userId);
 
     const getUserDetailsUseCase = container.get<IGetUserDetails>(
-      SERVICE_IDENTIFIER.GetUserListUseCase
+      SERVICE_IDENTIFIER.GetUserDetailsUseCase
     );
-    const result = await getUserDetailsUseCase.execute(params.id);
+    const result = await getUserDetailsUseCase.execute(userId);
 
     return NextResponse.json({
       success: true,

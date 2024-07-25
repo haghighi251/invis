@@ -43,7 +43,7 @@ const UserView = ({ user }: UserViewProps) => {
           Delete
         </Button>
       </div>
-      <DeleteModalComponent userId={user.id} show={openModal} />
+      <DeleteModalComponent userId={user.id} show={openModal} onClose={() => setOpenModal(false)} />
     </div>
   );
 };

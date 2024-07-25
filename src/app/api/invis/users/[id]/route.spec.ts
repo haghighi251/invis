@@ -13,6 +13,8 @@ const handlerProps = {
   },
 };
 
+const mockRequest = new Request("http://localhost");
+
 describe("GET handler", () => {
   let getUserDetailsUseCase: jest.Mocked<IGetUserDetails>;
   getUserDetailsUseCase = {
@@ -35,7 +37,7 @@ describe("GET handler", () => {
   it("should return a successful response with data", async () => {
     getUserDetailsUseCase.execute.mockResolvedValue(invisMockedUsers[0]);
 
-    const response = await GET(handlerProps);
+    const response = await GET(mockRequest, handlerProps);
     const json = await response.json();
     
     expect(json).toEqual({
@@ -51,7 +53,7 @@ describe("GET handler", () => {
     const mockError = new Error("Test error");
     getUserDetailsUseCase.execute.mockRejectedValue(mockError);
 
-    const response = await GET(handlerProps);
+    const response = await GET(mockRequest, handlerProps);
 
     expect(response).toBeInstanceOf(Object);
     const json = await response.json();
@@ -67,7 +69,7 @@ describe("GET handler", () => {
   it("should return a default error message for unknown errors", async () => {
     getUserDetailsUseCase.execute.mockRejectedValue("unknown error");
 
-    const response = await GET(handlerProps);
+    const response = await GET(mockRequest, handlerProps);
 
     expect(response).toBeInstanceOf(Object);
     const json = await response.json();

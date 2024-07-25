@@ -8,17 +8,12 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 export type DeleteModalProps = {
   userId: number;
   show: boolean;
+  onClose: () => void;
 };
 
-export function DeleteModalComponent({ userId, show }: DeleteModalProps) {
-  const [openModal, setOpenModal] = useState(true);
-
-  useEffect(() => {
-    setOpenModal(show);
-  }, [show]);
-
+export function DeleteModalComponent({ userId, show, onClose  }: DeleteModalProps) {
   return (
-    <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+    <Modal show={show} size="md" onClose={onClose} popup>
       <Modal.Header />
       <Modal.Body>
         <div className="text-center">
@@ -27,10 +22,10 @@ export function DeleteModalComponent({ userId, show }: DeleteModalProps) {
             {UserMessages.DELETE_USER_MESSAGE}
           </h3>
           <div className="flex justify-center gap-4">
-            <Button color="failure" onClick={() => setOpenModal(false)}>
+            <Button color="failure" onClick={onClose}>
               {UserMessages.CONFIRM_MESSAGE}
             </Button>
-            <Button color="gray" onClick={() => setOpenModal(false)}>
+            <Button color="gray" onClick={onClose}>
               {UserMessages.CANCELATION_MESSAGE}
             </Button>
           </div>

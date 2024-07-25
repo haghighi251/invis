@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useUserDetails } from "@/modules/invis/hooks/useUserDetails";
 import { Alert, Spinner } from "flowbite-react";

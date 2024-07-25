@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@/shared/types/invis/UserSchema";
@@ -19,7 +20,7 @@ export const useUserDetails = ({
 
   const { isError, isLoading, data } = useQuery<APIResponse | undefined>({
     queryKey: [QueryKey.UserView],
-    queryFn: () => getUserDetails(userId),
+    queryFn: () => getUserDetails(Number(userId)),
     retry: 1,
     refetchOnWindowFocus: false,
     enabled: true,
