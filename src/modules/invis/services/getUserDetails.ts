@@ -10,7 +10,7 @@ export const getUserDetails = async (
 ): Promise<APIResponse | undefined> => {
   try {
     UserIDSchema.parse(userId);
-    return axiosClient.get(`/api/invis/user/${userId}`);
+    return axiosClient.get(`/api/invis/users/${userId}`);
   } catch (error) {
     if (error instanceof ZodError)
       return {

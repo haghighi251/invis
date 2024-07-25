@@ -26,10 +26,10 @@ describe("getUserDetails", () => {
     (axiosClient.get as jest.Mock).mockResolvedValueOnce(mockResponse);
 
     const result = await getUserDetails(1);
-    expect(axiosClient.get).toHaveBeenCalledWith("/api/invis/user/1");
+    expect(axiosClient.get).toHaveBeenCalledWith("/api/invis/users/1");
     expect(result).toEqual(mockResponse);
     expect(axiosClientMocked.get).toHaveBeenCalledTimes(1);
-    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/user/1");
+    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/users/1");
   });
 
   it("should handle a successful response with the user details", async () => {
@@ -45,7 +45,7 @@ describe("getUserDetails", () => {
     expect(result.success).toBe(true);
     expect(result.data).toEqual(invisMockedUsers[0]);
     expect(axiosClientMocked.get).toHaveBeenCalledTimes(1);
-    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/user/1");
+    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/users/1");
   });
 
   it("should handle an error response with no user found", async () => {
@@ -61,7 +61,7 @@ describe("getUserDetails", () => {
     expect(result.data).toBe(null);
     expect(result.error).toBe("No user found with the given userId.");
     expect(axiosClientMocked.get).toHaveBeenCalledTimes(1);
-    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/user/3");
+    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/users/3");
   });
 
   it("should return an error when the userId is not a valid userId", async () => {
@@ -87,7 +87,7 @@ describe("getUserDetails", () => {
     expect(result.success).toBe(false);
     expect(result.error).toBe("Server error");
     expect(axiosClientMocked.get).toHaveBeenCalledTimes(1);
-    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/user/1");
+    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/users/1");
   });
 
   it("should throw an error when the network request fails", async () => {
@@ -96,6 +96,6 @@ describe("getUserDetails", () => {
 
     await expect(getUserDetails(1)).rejects.toThrow("Network error");
     expect(axiosClientMocked.get).toHaveBeenCalledTimes(1);
-    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/user/1");
+    expect(axiosClientMocked.get).toHaveBeenCalledWith("/api/invis/users/1");
   });
 });
