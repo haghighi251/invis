@@ -1,10 +1,10 @@
 // src/services/getUsers.spec.ts
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import { getUsers } from "./getUsers";
-import { axiosClient } from "@/shared/http/AxiosClient";
+import { axiosClient } from "@/infrastructure/http/AxiosClient";
 import { APIResponse } from "@/shared/types/APIResponse";
 
-jest.mock("@/shared/http/AxiosClient", () => ({
+jest.mock("@/infrastructure/http/AxiosClient", () => ({
   axiosClient: {
     get: jest.fn(),
   },
