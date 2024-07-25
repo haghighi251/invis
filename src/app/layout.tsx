@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ReactQueryProvider from "@/components/ReactQuery/ReactQueryProvider";
+import { BreadcrumbComponent } from "@/components/Breadcrumb/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "User CRUD application with NextJS 15",
@@ -14,8 +15,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col mx-auto my-5 justify-center items-center">
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+      <body>
+        <ReactQueryProvider>
+          <div className="flex flex-col mx-auto my-5 justify-center items-center py-3">
+            <BreadcrumbComponent />
+            {children}
+          </div>
+        </ReactQueryProvider>
       </body>
     </html>
   );

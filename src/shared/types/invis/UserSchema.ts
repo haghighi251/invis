@@ -11,6 +11,7 @@ export const UserSchema = z.object({
   name: z.string().min(1, "Name is required"),
   username: z.string().min(1, "Username is required"),
   email: z.string().email("Invalid email format"),
+  profileImage: z.string().optional()
 });
 
 export type User = z.infer<typeof UserSchema>;

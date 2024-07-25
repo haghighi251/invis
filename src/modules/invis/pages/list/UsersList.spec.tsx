@@ -27,7 +27,7 @@ describe("UsersList component", () => {
     expect(
       screen.getByRole("heading", { name: "Users list:" })
     ).toBeInTheDocument();
-    expect(screen.getByText("Loading ....")).toBeInTheDocument();
+    expect(screen.getByRole("status", {name: "Loading ...."})).toBeInTheDocument();
   });
 
   it("should SHOW the users without loading and error", async () => {
@@ -42,7 +42,7 @@ describe("UsersList component", () => {
     expect(
       screen.getByRole("heading", { name: "Users list:" })
     ).toBeInTheDocument();
-    expect(screen.queryByText("Loading ....")).not.toBeInTheDocument();
+    expect(screen.queryByRole('status', { name: 'Loading ....' })).not.toBeInTheDocument();
     waitFor(() => {
       expect(
         screen.getByText(invisMockedUsers[0].username)
@@ -68,7 +68,7 @@ describe("UsersList component", () => {
     expect(
       screen.getByRole("heading", { name: "Users list:" })
     ).toBeInTheDocument();
-    expect(screen.queryByText("Loading ....")).not.toBeInTheDocument();
+    expect(screen.queryByRole('status', { name: 'Loading ....' })).not.toBeInTheDocument();
     expect(screen.queryByText("Username:")).not.toBeInTheDocument();
     expect(screen.queryByText("Email:")).not.toBeInTheDocument();
     expect(screen.getByText("ERROR TEXT")).toBeInTheDocument();
