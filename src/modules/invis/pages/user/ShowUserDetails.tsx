@@ -14,7 +14,7 @@ const ShowUserDetails = ({ userId }: ShowUserDetailsProps) => {
     useUserDetails({ userId });
 
   return (
-    <div>
+    <div className="w-full">
       <h1 className="my-3">User Details:</h1>
 
       {userDetailsIsLoading && <Spinner aria-label="Loading ...." size="lg" />}

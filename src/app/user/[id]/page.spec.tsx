@@ -2,12 +2,27 @@ import { useUserDetails } from "@modules/invis/hooks/useUserDetails";
 import { render, screen, waitFor } from "@testing-library/react";
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import Page from "./page";
+import { useDeleteUser } from "@/modules/invis/hooks/useDeleteUser";
 
 jest.mock("@modules/invis/hooks/useUserDetails", () => ({
   useUserDetails: jest.fn(),
 }));
 const useUserDetailsMocked = useUserDetails as jest.MockedFn<
   typeof useUserDetails
+>;
+
+jest.mock("next/navigation");
+jest.mock("@/components/ReactQuery/ReactQueryProvider", () => ({
+  queryClient: {
+    invalidateQueries: jest.fn(),
+  },
+}));
+
+jest.mock("@/modules/invis/hooks/useDeleteUser", () => ({
+  useDeleteUser: jest.fn(),
+}));
+const useDeleteUserMocked = useDeleteUser as jest.MockedFn<
+  typeof useDeleteUser
 >;
 
 const useUserListMockedResponse = {
@@ -20,11 +35,22 @@ const useUserListMockedResponse = {
 describe("UserViewPage", () => {
   beforeEach(() => {
     useUserDetailsMocked.mockClear();
+    useDeleteUserMocked.mockClear();
+    useDeleteUserMocked.mockReturnValue({
+      deleteUserIsLoading: false,
+      deleteUserIsError: false,
+      deleteUserIsSuccess: false,
+      error: undefined,
+      deleteUser: jest.fn(),
+    });
+  });
+  afterEach(() => {
+    jest.clearAllMocks();
   });
   it("should SHOW loading without error and user data", async () => {
     useUserDetailsMocked.mockReturnValue(useUserListMockedResponse);
 
-    render(<Page params={{id: 1}} />);
+    render(<Page params={{ id: 1 }} />);
 
     expect(
       screen.getByRole("heading", { name: "User Details:" })
@@ -41,7 +67,7 @@ describe("UserViewPage", () => {
       user: invisMockedUsers[0],
     });
 
-    render(<Page params={{id: 1}} />);
+    render(<Page params={{ id: 1 }} />);
 
     expect(
       screen.getByRole("heading", { name: "User Details:" })
@@ -65,7 +91,7 @@ describe("UserViewPage", () => {
       error: "ERROR TEXT",
     });
 
-    render(<Page params={{id: 0}} />);
+    render(<Page params={{ id: 0 }} />);
 
     expect(
       screen.getByRole("heading", { name: "User Details:" })

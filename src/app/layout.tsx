@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ReactQueryProvider>
-          <div className="flex flex-col mx-auto my-5 justify-center items-center py-3">
+          <div className="flex w-full flex-col mx-auto my-5 justify-center items-center py-3">
             <BreadcrumbComponent />
             {children}
           </div>

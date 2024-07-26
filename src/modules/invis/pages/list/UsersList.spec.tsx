@@ -8,6 +8,8 @@ jest.mock("@modules/invis/hooks/useUserList", () => ({
 }));
 const useUserListMocked = useUserList as jest.MockedFn<typeof useUserList>;
 
+jest.mock("next/navigation");
+
 const useUserListMockedResponse = {
   usersListIsLoading: true,
   usersListIsError: false,
@@ -25,7 +27,7 @@ describe("UsersList component", () => {
     render(<UsersList />);
 
     expect(
-      screen.getByRole("heading", { name: "Users list:" })
+      screen.getByRole("heading", { name: "Users list" })
     ).toBeInTheDocument();
     expect(screen.getByRole("status", {name: "Loading ...."})).toBeInTheDocument();
   });
@@ -40,7 +42,7 @@ describe("UsersList component", () => {
     render(<UsersList />);
 
     expect(
-      screen.getByRole("heading", { name: "Users list:" })
+      screen.getByRole("heading", { name: "Users list" })
     ).toBeInTheDocument();
     expect(screen.queryByRole('status', { name: 'Loading ....' })).not.toBeInTheDocument();
     waitFor(() => {
@@ -66,7 +68,7 @@ describe("UsersList component", () => {
     render(<UsersList />);
 
     expect(
-      screen.getByRole("heading", { name: "Users list:" })
+      screen.getByRole("heading", { name: "Users list" })
     ).toBeInTheDocument();
     expect(screen.queryByRole('status', { name: 'Loading ....' })).not.toBeInTheDocument();
     expect(screen.queryByText("Username:")).not.toBeInTheDocument();

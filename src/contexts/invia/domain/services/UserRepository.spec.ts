@@ -188,7 +188,7 @@ describe("UserRepository", () => {
     const userId = 1;
     it("should add a user on success", async () => {
       mockedAxios.post.mockResolvedValue({
-        status: 200,
+        status: 201,
         data: true,
       });
 

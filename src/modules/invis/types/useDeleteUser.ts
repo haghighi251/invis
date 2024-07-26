@@ -1,5 +1,3 @@
-import { User } from "@/shared/types/invis/UserSchema";
-
 export type useDeleteUserResult = {
   deleteUserIsLoading: boolean;
   deleteUserIsError: boolean;

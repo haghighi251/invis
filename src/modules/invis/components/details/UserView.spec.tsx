@@ -2,8 +2,33 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import UserView from "./UserView";
 import { UserMessages } from "@/modules/shared/types/UserMessages";
+import { useDeleteUser } from "@modules/invis/hooks/useDeleteUser";
+
+jest.mock("next/navigation");
+jest.mock("@/components/ReactQuery/ReactQueryProvider", () => ({
+  queryClient: {
+    invalidateQueries: jest.fn(),
+  },
+}));
+
+jest.mock("@/modules/invis/hooks/useDeleteUser", () => ({
+  useDeleteUser: jest.fn(),
+}));
+const useDeleteUserMocked = useDeleteUser as jest.MockedFn<
+  typeof useDeleteUser
+>;
 
 describe("UserView", () => {
+  beforeEach(() => {
+    useDeleteUserMocked.mockClear();
+    useDeleteUserMocked.mockReturnValue({
+      deleteUserIsLoading: false,
+      deleteUserIsError: false,
+      deleteUserIsSuccess: false,
+      error: undefined,
+      deleteUser: jest.fn(),
+    });
+  })
   it("should Show an alert with error if there is no user data in the user prop", () => {
     render(<UserView user={null} />);
 

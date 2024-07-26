@@ -2,6 +2,21 @@ import { useUserDetails } from "@modules/invis/hooks/useUserDetails";
 import { render, screen, waitFor } from "@testing-library/react";
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import ShowUserDetails from "./ShowUserDetails";
+import { useDeleteUser } from "@modules/invis/hooks/useDeleteUser";
+
+jest.mock("next/navigation");
+jest.mock("@/components/ReactQuery/ReactQueryProvider", () => ({
+  queryClient: {
+    invalidateQueries: jest.fn(),
+  },
+}));
+
+jest.mock("@/modules/invis/hooks/useDeleteUser", () => ({
+  useDeleteUser: jest.fn(),
+}));
+const useDeleteUserMocked = useDeleteUser as jest.MockedFn<
+  typeof useDeleteUser
+>;
 
 jest.mock("@modules/invis/hooks/useUserDetails", () => ({
   useUserDetails: jest.fn(),
@@ -20,6 +35,14 @@ const useUserListMockedResponse = {
 describe("ShowUserDetails component", () => {
   beforeEach(() => {
     useUserDetailsMocked.mockClear();
+    useDeleteUserMocked.mockClear();
+    useDeleteUserMocked.mockReturnValue({
+      deleteUserIsLoading: false,
+      deleteUserIsError: false,
+      deleteUserIsSuccess: false,
+      error: undefined,
+      deleteUser: jest.fn(),
+    });
   });
   it("should SHOW loading without error and user data", async () => {
     useUserDetailsMocked.mockReturnValue(useUserListMockedResponse);

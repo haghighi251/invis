@@ -1,5 +1,5 @@
 import { User } from "@/shared/types/invis/UserSchema";
-import { Alert, Avatar, List } from "flowbite-react";
+import { Alert, Avatar, List, Table } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { HiInformationCircle } from "react-icons/hi";
@@ -15,6 +15,10 @@ const UsersListView = ({ users }: UsersListViewProps) => {
     router.push(`/user/${userId}`);
   };
 
+  const randomImage = (): number => {
+    return Math.floor(Math.random() * 5) + 1;
+  }
+
   if (users.length < 1)
     return (
       <Alert color="failure" icon={HiInformationCircle}>
@@ -23,35 +27,52 @@ const UsersListView = ({ users }: UsersListViewProps) => {
     );
 
   return (
-    <List className="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-      {users.map((user) => {
-        return (
-          <List.Item
-            key={user.id}
-            data-testid={`user${user.id}`}
-            className="pb-3 sm:pb-4 list-none"
-            onClick={() => openUserView(user.id)}
-          >
-            <div className="flex items-center space-x-4 rtl:space-x-reverse">
-              <Avatar
-                img={`/profiles/profile-picture-${user.id}.jpg`}
-                alt={user.name}
-                rounded
-                size="sm"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
-                  {user.name}
-                </p>
-                <p className="truncate text-sm text-gray-500 dark:text-gray-400">
-                  {user.email}
-                </p>
-              </div>
-            </div>
-          </List.Item>
-        );
-      })}
-    </List>
+    <div className="overflow-x-auto">
+      <Table hoverable>
+        <Table.Head>
+          <Table.HeadCell>Profile</Table.HeadCell>
+          <Table.HeadCell>Name</Table.HeadCell>
+          <Table.HeadCell>UserName</Table.HeadCell>
+          <Table.HeadCell>Email</Table.HeadCell>
+          <Table.HeadCell>Edit</Table.HeadCell>
+        </Table.Head>
+        <Table.Body className="divide-y">
+          {users.map((user) => {
+            return (
+              <Table.Row
+                key={user.id}
+                data-testid={`user${user.id}`}
+                onClick={() => openUserView(user.id)}
+                className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
+              >
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex flex-wrap items-left gap-2">
+                    <Avatar
+                      img={`/profiles/profile-picture-${randomImage()}.jpg`}
+                      alt={user.name}
+                      rounded
+                      size="lg"
+                      className="items-left pl-0"
+                    />
+                  </div>
+                </Table.Cell>
+                <Table.Cell>{user.name}</Table.Cell>
+                <Table.Cell>{user.username}</Table.Cell>
+                <Table.Cell>{user.email}</Table.Cell>
+                <Table.Cell>
+                  <a
+                    href="#"
+                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  >
+                    Edit
+                  </a>
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table.Body>
+      </Table>
+    </div>
   );
 };
 
