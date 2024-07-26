@@ -13,12 +13,8 @@ export const getUserDetails = async (
     return axiosClient.get(`/api/invis/users/${userId}`);
   } catch (error) {
     if (error instanceof ZodError)
-      return {
-        success: false,
-        error: error.errors[0].message,
-        data: null,
-      };
+      throw new Error(error.errors[0].message);
 
-    return undefined;
+    throw new Error("Unexpected error with getUserDetails API caller.");
   }
 };

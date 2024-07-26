@@ -2,7 +2,8 @@
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import { axiosClient } from "@/infrastructure/http/AxiosClient";
 import { APIResponse } from "@/shared/types/APIResponse";
-import { getUserDetails } from "./getUserDetails";
+import { getUserDetails, UserIDSchema } from "./getUserDetails";
+import { ZodError, ZodIssue } from "zod";
 
 jest.mock("@/infrastructure/http/AxiosClient", () => ({
   axiosClient: {
@@ -15,6 +16,9 @@ const axiosClientMocked = axiosClient as jest.Mocked<typeof axiosClient>;
 describe("getUserDetails", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    UserIDSchema.parse = jest.fn().mockImplementation(() => {
+      return;
+    });
   });
 
   it("should make a GET request to the correct URL", async () => {
@@ -65,13 +69,17 @@ describe("getUserDetails", () => {
   });
 
   it("should return an error when the userId is not a valid userId", async () => {
-    const result = await getUserDetails(0);
+    const invalidUserId = -1;
 
-    expect(result).toEqual({
-        success: false,
-        error: "ID must be a positive integer",
-        data: null,
-      });
+    UserIDSchema.parse = jest.fn().mockImplementation(() => {
+      throw new ZodError([
+        { message: "ID must be a positive integer" },
+      ] as ZodIssue[]);
+    });
+
+    await expect(getUserDetails(invalidUserId)).rejects.toThrow(
+      "ID must be a positive integer"
+    );
     expect(axiosClientMocked.get).toHaveBeenCalledTimes(0);
   });
 

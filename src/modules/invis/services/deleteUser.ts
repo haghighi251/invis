@@ -15,6 +15,6 @@ export const deleteUser = async (
     if (error instanceof ZodError)
       throw new Error(error.errors[0].message);
 
-    return undefined;
+    throw new Error("Unexpected error with deleteUser API caller.");
   }
 };
