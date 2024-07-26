@@ -62,4 +62,35 @@ export class UserRepository {
       return err(errorMessage);
     }
   }
+
+  async deleteUserById(userId: number): Promise<Result<true, string>> {
+    try {
+      if (!process.env.BFF_URL) {
+        throw new Error("BFF_URL environment variable is not defined.");
+      }
+      const result = await axios.delete(`/users/${userId}`, {
+        baseURL: process.env.BFF_URL,
+        timeout: 5000,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result.status !== 200)
+        return err("Delete operation is not completed on the server.");
+
+      const user: User = result.data;
+
+      return ok(true);
+    } catch (error) {
+      let errorMessage = "Something crashed on the server!";
+
+      if (error instanceof AxiosError || error instanceof Error)
+        errorMessage = error.message;
+
+      return err(errorMessage);
+    }
+  }
+
+
 }

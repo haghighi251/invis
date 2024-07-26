@@ -139,4 +139,64 @@ describe("UserRepository", () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
   });
+
+  describe("UserRepository - deleteUserById method", () => {
+    const userId = 1
+    it("should remove a user on success", async () => {
+      mockedAxios.delete.mockResolvedValue({
+        status: 200,
+        data: true,
+      }); 
+
+      const result = await userRepository.deleteUserById(userId);
+
+      expect(result).toEqual(ok(true));
+      expect(mockedAxios.delete).toHaveBeenCalledWith(`/users/${userId}`, {
+        baseURL: process.env.BFF_URL,
+        timeout: 5000,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    });
+
+    it("should return an error when BFF_URL is not defined", async () => {
+      delete process.env.BFF_URL;
+
+      await expect(userRepository.deleteUserById(userId)).resolves.toEqual(
+        err("BFF_URL environment variable is not defined.")
+      );
+    });
+
+    it("should return an error when the server returns a non-200 status", async () => {
+      mockedAxios.delete.mockResolvedValue({ status: 500 });
+
+      const result = await userRepository.deleteUserById(userId);
+
+      expect(result).toEqual(err("Delete operation is not completed on the server."));
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return an error message from AxiosError", async () => {
+      const errorMessage = "Delete operation is not completed on the server.";
+      mockedAxios.delete.mockRejectedValue(new AxiosError(errorMessage));
+
+      const result = await userRepository.deleteUserById(userId);
+
+      waitFor(() => {
+        expect(result).toEqual(err(errorMessage));
+        expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+        expect(mockedAxios.delete).toHaveBeenCalledWith(`/users/${userId}`);
+      });
+    });
+
+    it("should return a generic error message for unknown errors", async () => {
+      mockedAxios.delete.mockRejectedValue(new Error("Unknown Error"));
+
+      const result = await userRepository.deleteUserById(userId);
+
+      expect(result).toEqual(err("Unknown Error"));
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+    });
+  });
 });
