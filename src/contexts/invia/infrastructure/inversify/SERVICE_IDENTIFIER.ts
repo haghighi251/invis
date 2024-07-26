@@ -3,6 +3,7 @@ const SERVICE_IDENTIFIER = {
     UserRepository: Symbol.for('UserRepository'),
     GetUserDetailsUseCase: Symbol.for('GetUserDetailsUseCase'),
     DeleteUserUseCase: Symbol.for('DeleteUserUseCase'),
+    AddUserUseCase: Symbol.for('AddUserUseCase'),
 };
 
 export { SERVICE_IDENTIFIER };

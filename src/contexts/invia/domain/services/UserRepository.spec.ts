@@ -12,15 +12,21 @@ describe("UserRepository", () => {
   let userRepository: UserRepository;
 
   beforeEach(() => {
-    userRepository = new UserRepository();
     // For unit tests, it is generally best to mock environment variables to ensure a controlled and consistent test environment.
     // This can sometimes lead to flaky tests if those variables depend on external services or if they are subject to change.
     process.env.BFF_URL = "http://fakeurl.com";
+    process.env.REQUEST_TIMEOUT = "5000";
+    userRepository = new UserRepository();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     delete process.env.BFF_URL;
+  });
+
+  it("should throw an error when BFF_URL is not defined", () => {
+    delete process.env.BFF_URL;
+    expect(() => new UserRepository()).toThrow("BFF_URL environment variable is not defined.");
   });
 
   describe("UserRepository - findAll method", () => {
@@ -40,14 +46,6 @@ describe("UserRepository", () => {
           "Content-Type": "application/json",
         },
       });
-    });
-
-    it("should return an error when BFF_URL is not defined", async () => {
-      delete process.env.BFF_URL;
-
-      await expect(userRepository.findAll()).resolves.toEqual(
-        err("BFF_URL environment variable is not defined.")
-      );
     });
 
     it("should return an error when the server returns a non-200 status", async () => {
@@ -82,12 +80,12 @@ describe("UserRepository", () => {
   });
 
   describe("UserRepository - findUserById method", () => {
-    const userId = 1
+    const userId = 1;
     it("should return a user on success", async () => {
       mockedAxios.get.mockResolvedValue({
         status: 200,
         data: invisMockedUsers[0],
-      }); 
+      });
 
       const result = await userRepository.findUserById(userId);
 
@@ -99,14 +97,6 @@ describe("UserRepository", () => {
           "Content-Type": "application/json",
         },
       });
-    });
-
-    it("should return an error when BFF_URL is not defined", async () => {
-      delete process.env.BFF_URL;
-
-      await expect(userRepository.findUserById(userId)).resolves.toEqual(
-        err("BFF_URL environment variable is not defined.")
-      );
     });
 
     it("should return an error when the server returns a non-200 status", async () => {
@@ -141,12 +131,12 @@ describe("UserRepository", () => {
   });
 
   describe("UserRepository - deleteUserById method", () => {
-    const userId = 1
+    const userId = 1;
     it("should remove a user on success", async () => {
       mockedAxios.delete.mockResolvedValue({
         status: 200,
         data: true,
-      }); 
+      });
 
       const result = await userRepository.deleteUserById(userId);
 
@@ -160,20 +150,14 @@ describe("UserRepository", () => {
       });
     });
 
-    it("should return an error when BFF_URL is not defined", async () => {
-      delete process.env.BFF_URL;
-
-      await expect(userRepository.deleteUserById(userId)).resolves.toEqual(
-        err("BFF_URL environment variable is not defined.")
-      );
-    });
-
     it("should return an error when the server returns a non-200 status", async () => {
       mockedAxios.delete.mockResolvedValue({ status: 500 });
 
       const result = await userRepository.deleteUserById(userId);
 
-      expect(result).toEqual(err("Delete operation is not completed on the server."));
+      expect(result).toEqual(
+        err("Delete operation is not completed on the server.")
+      );
       expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
     });
 
@@ -197,6 +181,64 @@ describe("UserRepository", () => {
 
       expect(result).toEqual(err("Unknown Error"));
       expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("UserRepository - addNewUser method", () => {
+    const userId = 1;
+    it("should add a user on success", async () => {
+      mockedAxios.post.mockResolvedValue({
+        status: 200,
+        data: true,
+      });
+
+      const result = await userRepository.addNewUser(invisMockedUsers[0]);
+
+      expect(result).toEqual(ok(true));
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        `/users`,
+        invisMockedUsers[0],
+        {
+          baseURL: process.env.BFF_URL,
+          timeout: 5000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    });
+
+    it("should return an error when the server returns a non-200 status", async () => {
+      mockedAxios.post.mockResolvedValue({ status: 500 });
+
+      const result = await userRepository.addNewUser(invisMockedUsers[0]);
+
+      expect(result).toEqual(
+        err("Add new user operation is not completed on the server.")
+      );
+      expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return an error message from AxiosError", async () => {
+      const errorMessage = "Add new user operation is not completed on the server.";
+      mockedAxios.post.mockRejectedValue(new AxiosError(errorMessage));
+
+      const result = await userRepository.addNewUser(invisMockedUsers[0]);
+
+      waitFor(() => {
+        expect(result).toEqual(err(errorMessage));
+        expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+        expect(mockedAxios.post).toHaveBeenCalledWith(`/users/${userId}`);
+      });
+    });
+
+    it("should return a generic error message for unknown errors", async () => {
+      mockedAxios.post.mockRejectedValue(new Error("Unknown Error"));
+
+      const result = await userRepository.addNewUser(invisMockedUsers[0]);
+
+      expect(result).toEqual(err("Unknown Error"));
+      expect(mockedAxios.post).toHaveBeenCalledTimes(1);
     });
   });
 });
