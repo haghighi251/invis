@@ -11,7 +11,7 @@ export const updateUser = async (
   user: User
 ): Promise<APIResponse | undefined> => {
   try {
-    userIdSchema.parse(userId);
+    userIdSchema.parse(Number(userId));
     PartialUserSchema.parse(user);
     return axiosClient.patch(`/api/invis/users/update/${userId}`, user);
   } catch (error) {

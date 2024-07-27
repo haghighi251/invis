@@ -31,7 +31,7 @@ export const useUserList = (): useUserResult => {
       setUsers(null);
       setError(data.error);
     }
-  }, [data, isError]);
+  }, [data, data?.success, isError]);
 
   return {
     usersListIsLoading: isLoading,

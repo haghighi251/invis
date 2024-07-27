@@ -1,5 +1,5 @@
 "use client";
-import { DeleteModalComponent } from "@/components/DeleteModal/DeleteModal";
+import { DeleteModalComponent } from "@/modules/invis/components/DeleteModal/DeleteModal";
 import { UserMessages } from "@/modules/shared/types/UserMessages";
 import { User } from "@/shared/types/invis/UserSchema";
 import { Alert, Avatar, Button } from "flowbite-react";
@@ -23,12 +23,12 @@ const UserView = ({ user }: UserViewProps) => {
     );
 
   return (
-    <div className="flex items-center space-x-4 rtl:space-x-reverse">
+    <div className="flex flex-col items-center space-y-4 rtl:space-x-reverse">
       <Avatar
-        img={`/profiles/profile-picture-${user.id}.jpg`}
+        img={`/profiles/profile-picture-${user.id > 4 ? 5 : user.id}.jpg`}
         alt={user.name}
         rounded
-        size="sm"
+        size="xl"
       />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-gray-900 dark:text-white">

@@ -11,7 +11,7 @@ export const useUpdateUser = (): useUpdateUserResult => {
   const [error, setError] = useState<string | undefined>(undefined);
 
   const mutation = useMutation({
-    mutationFn: (req: {userId: number, user: User}) => updateUser(req.userId, req.user),
+    mutationFn: (req: {userId: number, user: User}) => updateUser(Number(req.userId), req.user),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKey.UsersList] });
       setError(undefined);

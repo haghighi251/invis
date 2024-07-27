@@ -4,7 +4,7 @@ import { useDeleteUser } from "@/modules/invis/hooks/useDeleteUser";
 import { UserMessages } from "@/modules/shared/types/UserMessages";
 import { Alert, Button, Modal } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   HiOutlineExclamationCircle,
   HiInformationCircle,
@@ -30,8 +30,11 @@ export function DeleteModalComponent({
     deleteUser,
   } = useDeleteUser({ userId });
 
-  useCallback(() => {
-    if (deleteUserIsSuccess) router.push("/");
+  useEffect(() => {
+    if (deleteUserIsSuccess) {
+      router.push("/");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteUserIsSuccess, router]);
 
   return (

@@ -14,8 +14,8 @@ const ShowUserDetails = ({ userId }: ShowUserDetailsProps) => {
     useUserDetails({ userId });
 
   return (
-    <div className="w-full">
-      <h1 className="my-3">User Details:</h1>
+    <div className="flex flex-col w-3/4 items-center">
+      <h1 className="my-5">User Details:</h1>
 
       {userDetailsIsLoading && <Spinner aria-label="Loading ...." size="lg" />}
       {userDetailsIsError && (

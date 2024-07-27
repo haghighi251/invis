@@ -110,7 +110,7 @@ export function AddNewUserModal({
               required
             />
           </div>
-          <div className="w-full">
+          <div className="w-full my-5">
             <Button
               type="submit"
               {...(addUserIsLoading && { isProcessing: true })}
