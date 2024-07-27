@@ -86,20 +86,33 @@ export class UserRepository {
   async addNewUser(user: User): Promise<Result<true, string>> {
     const userData = user;
     try {
-      if (!process.env.BFF_URL) {
-        throw new Error("BFF_URL environment variable is not defined.");
-      }
-
       const url = "/users";
 
       const result = await axios.post(url, userData, this.config);
 
-      console.log(result);
-
       if (result.status !== 201)
         return err("Add new user operation is not completed on the server.");
 
-      const user: User = result.data;
+      return ok(true);
+    } catch (error) {
+      let errorMessage = "Something crashed on the server!";
+
+      if (error instanceof AxiosError || error instanceof Error)
+        errorMessage = error.message;
+
+      return err(errorMessage);
+    }
+  }
+
+  async updateUser(userId: number, user: Partial<User>): Promise<Result<true, string>> {
+    const userData = user;
+    try {
+      const url = `/users/${userId}`;
+
+      const result = await axios.patch(url, userData, this.config);
+
+      if (result.status !== 200)
+        return err("Update user operation is not completed on the server.");
 
       return ok(true);
     } catch (error) {

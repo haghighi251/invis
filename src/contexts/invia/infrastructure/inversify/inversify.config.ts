@@ -6,6 +6,7 @@ import GetUserListUseCase from '@/contexts/invia/application/usecases/GetUsersUs
 import GetUserDetailsUseCase from '@/contexts/invia/application/usecases/GetUserDetailsUseCase';
 import DeleteUserUseCase from '@/contexts/invia/application/usecases/DeleteUserUseCase';
 import AddUserUseCase from '@/contexts/invia/application/usecases/AddUserUseCase';
+import UpdateUserUseCase from '@/contexts/invia/application/usecases/UpdateUserUseCase';
 
 const container = new Container();
 
@@ -14,5 +15,6 @@ container.bind<UserRepository>(SERVICE_IDENTIFIER.UserRepository).to(UserReposit
 container.bind<GetUserDetailsUseCase>(SERVICE_IDENTIFIER.GetUserDetailsUseCase).to(GetUserDetailsUseCase);
 container.bind<DeleteUserUseCase>(SERVICE_IDENTIFIER.DeleteUserUseCase).to(DeleteUserUseCase);
 container.bind<AddUserUseCase>(SERVICE_IDENTIFIER.AddUserUseCase).to(AddUserUseCase);
+container.bind<UpdateUserUseCase>(SERVICE_IDENTIFIER.UpdateUserUseCase).to(UpdateUserUseCase);
 
 export { container };

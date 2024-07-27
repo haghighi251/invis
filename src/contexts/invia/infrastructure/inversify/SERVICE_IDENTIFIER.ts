@@ -4,6 +4,7 @@ const SERVICE_IDENTIFIER = {
     GetUserDetailsUseCase: Symbol.for('GetUserDetailsUseCase'),
     DeleteUserUseCase: Symbol.for('DeleteUserUseCase'),
     AddUserUseCase: Symbol.for('AddUserUseCase'),
+    UpdateUserUseCase: Symbol.for('UpdateUserUseCase'),
 };
 
 export { SERVICE_IDENTIFIER };

@@ -4,6 +4,7 @@ import { err, ok } from "neverthrow";
 import { UserRepository } from "./UserRepository";
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import { waitFor } from "@testing-library/dom";
+import { User } from "@/shared/types/invis/UserSchema";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -30,12 +31,24 @@ describe("UserRepository", () => {
   });
 
   describe("UserRepository - findAll method", () => {
-    it("should return a list of users on success", async () => {
+
+    beforeEach(() => {
       mockedAxios.get.mockResolvedValue({
         status: 200,
         data: invisMockedUsers,
       });
+    });
 
+    it("should NOT run on the DELETE, POST, PUT, PATCH", async () => {
+      await userRepository.findAll();
+
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.post).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.put).toHaveBeenCalledTimes(0);
+    });
+    it("should return a list of users on success", async () => {
       const result = await userRepository.findAll();
 
       expect(result).toEqual(ok(invisMockedUsers));
@@ -81,12 +94,25 @@ describe("UserRepository", () => {
 
   describe("UserRepository - findUserById method", () => {
     const userId = 1;
-    it("should return a user on success", async () => {
+
+    beforeEach(() => {
       mockedAxios.get.mockResolvedValue({
         status: 200,
         data: invisMockedUsers[0],
       });
+    });
 
+    it("should NOT run on the DELETE, POST, PUT, PATCH", async () => {
+      await userRepository.findUserById(userId);
+
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.post).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.put).toHaveBeenCalledTimes(0);
+    });
+
+    it("should return a user on success", async () => {
       const result = await userRepository.findUserById(userId);
 
       expect(result).toEqual(ok(invisMockedUsers[0]));
@@ -132,12 +158,24 @@ describe("UserRepository", () => {
 
   describe("UserRepository - deleteUserById method", () => {
     const userId = 1;
-    it("should remove a user on success", async () => {
+
+    beforeEach(() => {
       mockedAxios.delete.mockResolvedValue({
         status: 200,
         data: true,
       });
+    });
 
+    it("should NOT run on the GET, POST, PUT, PATCH", async () => {
+      await userRepository.deleteUserById(userId);
+
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.post).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.put).toHaveBeenCalledTimes(0);
+    });
+    it("should remove a user on success", async () => {
       const result = await userRepository.deleteUserById(userId);
 
       expect(result).toEqual(ok(true));
@@ -186,12 +224,25 @@ describe("UserRepository", () => {
 
   describe("UserRepository - addNewUser method", () => {
     const userId = 1;
-    it("should add a user on success", async () => {
+
+    beforeEach(() => {
       mockedAxios.post.mockResolvedValue({
         status: 201,
         data: true,
       });
+    });
 
+    it("should NOT run on the GET, PATCH, PUT, DELETE", async () => {
+      await userRepository.addNewUser(invisMockedUsers[0]);
+
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.put).toHaveBeenCalledTimes(0);
+    });
+
+    it("should add a user on success", async () => {
       const result = await userRepository.addNewUser(invisMockedUsers[0]);
 
       expect(result).toEqual(ok(true));
@@ -239,6 +290,82 @@ describe("UserRepository", () => {
 
       expect(result).toEqual(err("Unknown Error"));
       expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("UserRepository - updateUser method", () => {
+    const userId = 1;
+    const mockedUpdateUser: Partial<User> = {
+      name: invisMockedUsers[0].name,
+      username: invisMockedUsers[0].username,
+      email: invisMockedUsers[0].email
+    }
+
+    beforeEach(() => {
+      mockedAxios.patch.mockResolvedValue({
+        status: 200,
+        data: true,
+      });
+    });
+
+    it("should NOT run on the GET, POST, PUT, DELETE", async () => {
+      await userRepository.updateUser(userId, mockedUpdateUser);
+
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.post).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.delete).toHaveBeenCalledTimes(0);
+      expect(mockedAxios.put).toHaveBeenCalledTimes(0);
+    });
+
+    it("should update a user on success", async () => {
+      const result = await userRepository.updateUser(userId, mockedUpdateUser);
+
+      expect(result).toEqual(ok(true));
+      expect(mockedAxios.patch).toHaveBeenCalledWith(
+        `/users/${userId}`,
+        mockedUpdateUser,
+        {
+          baseURL: process.env.BFF_URL,
+          timeout: 5000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    });
+
+    it("should return an error when the server returns a non-200 status", async () => {
+      mockedAxios.patch.mockResolvedValue({ status: 500 });
+
+      const result = await userRepository.updateUser(userId, mockedUpdateUser);
+
+      expect(result).toEqual(
+        err("Update user operation is not completed on the server.")
+      );
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return an error message from AxiosError", async () => {
+      const errorMessage = "Update user operation is not completed on the server.";
+      mockedAxios.patch.mockRejectedValue(new AxiosError(errorMessage));
+
+      const result = await userRepository.updateUser(userId, mockedUpdateUser);
+
+      waitFor(() => {
+        expect(result).toEqual(err(errorMessage));
+        expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+        expect(mockedAxios.post).toHaveBeenCalledWith(`/users/${userId}`);
+      });
+    });
+
+    it("should return a generic error message for unknown errors", async () => {
+      mockedAxios.patch.mockRejectedValue(new Error("Unknown Error"));
+
+      const result = await userRepository.updateUser(userId, mockedUpdateUser);
+
+      expect(result).toEqual(err("Unknown Error"));
+      expect(mockedAxios.patch).toHaveBeenCalledTimes(1);
     });
   });
 });
