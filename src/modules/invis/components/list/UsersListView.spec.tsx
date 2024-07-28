@@ -2,22 +2,33 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useRouter } from "next/navigation";
 import UsersListView from "./UsersListView";
 import { invisMockedUsers } from "@/__mocks__/invis/users";
+import { useUpdateUser } from "@/modules/invis/hooks/useUpdateUser";
 
-jest.mock('next/navigation', () => ({
-    useRouter: jest.fn(),
-  }));
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock("@/modules/invis/hooks/useUpdateUser");
+const useUpdateUserMock = useUpdateUser as jest.MockedFn<typeof useUpdateUser>;
 
 describe("UsersListView", () => {
-    const useRouterMock = useRouter as jest.Mock;
-    const pushMock = jest.fn();
-  
-    beforeEach(() => {
-      useRouterMock.mockReturnValue({ push: pushMock });
+  const useRouterMock = useRouter as jest.Mock;
+  const pushMock = jest.fn();
+
+  beforeEach(() => {
+    useRouterMock.mockReturnValue({ push: pushMock });
+    useUpdateUserMock.mockReturnValue({
+      updateUserIsLoading: false,
+      updateUserIsError: false,
+      updateUserIsSuccess: false,
+      error: undefined,
+      updateUserMutation: jest.fn(),
     });
-  
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it("should Show an alert if there is no users in the users prop", () => {
     render(<UsersListView users={[]} />);

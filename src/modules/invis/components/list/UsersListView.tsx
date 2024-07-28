@@ -19,8 +19,8 @@ const UsersListView = ({ users }: UsersListViewProps) => {
   };
 
   const setUserToUpdate = (userId: number) => {
-    const user = users.find( user => user.id === userId);
-    if(user) setSelectedUser(user);
+    const user = users.find((user) => user.id === userId);
+    if (user) setSelectedUser(user);
   };
 
   useEffect(() => {
@@ -49,21 +49,23 @@ const UsersListView = ({ users }: UsersListViewProps) => {
           <Table.HeadCell>Edit</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {users.map((user) => {
+          {users.map((user, index) => {
             return (
               <Table.Row
-                key={user.id}
-                data-testid={`user${user.id}`}
+                key={`${user.id}-${index}`}
                 className="bg-white dark:border-gray-700 dark:bg-gray-800"
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   <div className="flex flex-wrap items-left gap-2">
                     <Avatar
-                      img={`/profiles/profile-picture-${user.id > 4 ? 5 : user.id}.jpg`}
+                      img={`/profiles/profile-picture-${
+                        user.id > 4 ? 5 : user.id
+                      }.jpg`}
                       alt={user.name}
                       rounded
                       size="lg"
                       className="items-left pl-0 cursor-pointer"
+                      data-testid={`user${user.id}`}
                       onClick={() => openUserView(user.id)}
                     />
                   </div>
