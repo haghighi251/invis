@@ -3,7 +3,6 @@ import { container } from "@/contexts/invia/infrastructure/inversify/inversify.c
 import { GET } from "./route";
 import { invisMockedUsers } from "@/__mocks__/invis/users";
 import { IGetUserDetails } from "@/contexts/invia/infrastructure/interfaces/IGetUserDetails";
-import { object } from "zod";
 
 jest.mock("@/contexts/invia/infrastructure/inversify/inversify.config");
 
